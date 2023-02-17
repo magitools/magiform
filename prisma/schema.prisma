@@ -27,24 +27,32 @@ model Hook {
   url     String   @db.LongText
   enabled Boolean  @default(true)
   type    HookType
-  forms    Form?    @relation(fields: [formId], references: [id])
+  forms   Form?    @relation(fields: [formId], references: [id])
   formId  Int?
 }
 
 model Form {
-  id             Int    @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   name           String
-  user           User?  @relation(fields: [userId], references: [id])
+  user           User?     @relation(fields: [userId], references: [id])
   userId         Int?
   allowedOrigins String
   webhooks       Hook[]
+  statistic      Statistic @relation(fields: [statisticId], references: [id])
+  statisticId    Int       @unique
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  username String @unique
-  password String
+  id          Int         @id @default(autoincrement())
+  email       String      @unique
+  username    String      @unique
+  password    String
   accountType AccountType @default(Free)
-  forms    Form[]
+  forms       Form[]
+}
+
+model Statistic {
+  id   Int   @id @default(autoincrement())
+  hits Int   @default(0)
+  form Form?
 }
