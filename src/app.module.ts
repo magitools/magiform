@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { FormModule } from './form/form.module';
 import { HookModule } from './hook/hook.module';
 import { IntegrationsModule } from './integrations/integrations.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { IntegrationsModule } from './integrations/integrations.module';
     FormModule,
     HookModule,
     IntegrationsModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
