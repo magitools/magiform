@@ -2,16 +2,23 @@ import { Prisma } from '.prisma/client';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Base } from 'src/integrations/Base';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { StatisticsService } from 'src/statistics/statistics.service';
 import { FormCreateDTO } from './form.create.dto';
 
 @Injectable()
 export class FormService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private statisticService: StatisticsService,
+  ) {}
 
   async getAll(userId: number) {
     return this.prismaService.form.findMany({
       where: { userId },
-      include: { webhooks: { select: { name: true } } },
+      include: {
+        webhooks: { select: { name: true } },
+        statistic: { select: { hits: true } },
+      },
     });
   }
 
@@ -33,7 +40,11 @@ export class FormService {
 
   async create(userId: number, data: FormCreateDTO) {
     const form = await this.prismaService.form.create({
-      data: { ...data.form, user: { connect: { id: userId } } },
+      data: {
+        ...data.form,
+        user: { connect: { id: userId } },
+        statistic: { create: { hits: 0 } },
+      },
     });
     const hooks = await this.prismaService.hook.createMany({
       data: data.hooks.map((e) => ({ ...e, formId: form.id })),
@@ -64,5 +75,6 @@ export class FormService {
         await require(`../integrations/${hook.type}.hook`);
       await new handler(hook.url, data, form.name).sendHook();
     });
+    await this.statisticService.update(form.id);
   }
 }
