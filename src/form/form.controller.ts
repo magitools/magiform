@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  HostParam,
+  Headers,
   Param,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FormCreateDTO } from './form.create.dto';
 import { FormService } from './form.service';
@@ -37,10 +37,12 @@ export class FormController {
   }
   @Post('/trigger/:id')
   async trigger(
-    @HostParam() host,
+    @Headers('origin') origin,
     @Param('id') id: string,
     @Body() data: Object,
+    @Res() res,
   ) {
-    return this.formService.trigger(host.origin, parseInt(id), data);
+    const redirect = await this.formService.trigger(origin, parseInt(id), data);
+    return res.redirect(redirect || `${origin}`);
   }
 }

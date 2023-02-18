@@ -76,5 +76,6 @@ export class FormService {
       await new handler(hook.url, data, form.name).sendHook();
     });
     await this.statisticService.update(form.id);
+    return form.redirectUrl || null;
   }
 }
