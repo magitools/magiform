@@ -6,10 +6,12 @@ import {
   Headers,
   Param,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FormCreateDTO } from './form.create.dto';
 import { FormService } from './form.service';
@@ -35,6 +37,17 @@ export class FormController {
   async delete(@Req() req, @Param('id') id: string) {
     return this.formService.delete(req.user.id, parseInt(id));
   }
+
+  @Put('/:id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Req() req,
+    @Param('id') formId: string,
+    @Body() data: Prisma.FormUpdateInput,
+  ) {
+    return this.formService.update(req.user.id, parseInt(formId), data);
+  }
+
   @Post('/trigger/:id')
   async trigger(
     @Headers('origin') origin,
