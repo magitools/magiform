@@ -10,10 +10,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FormCreateDTO } from './form.create.dto';
 import { FormService } from './form.service';
 
+@ApiTags('form')
 @Controller('form')
 export class FormController {
   constructor(private formService: FormService) {}
