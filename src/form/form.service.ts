@@ -16,7 +16,7 @@ export class FormService {
     return this.prismaService.form.findMany({
       where: { userId },
       include: {
-        webhooks: { select: { id: true, name: true, type: true, url: true } },
+        webhooks: { select: { name: true } },
         statistic: { select: { hits: true } },
       },
     });
@@ -25,10 +25,6 @@ export class FormService {
   async get(userId: number, formId: number) {
     const form = await this.prismaService.form.findUnique({
       where: { id: formId },
-      include: {
-        webhooks: { select: { id: true, name: true, type: true, url: true } },
-        statistic: { select: { hits: true } },
-      },
     });
     if (form.userId !== userId) throw UnauthorizedException;
     return form;
