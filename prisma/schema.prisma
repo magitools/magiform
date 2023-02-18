@@ -40,6 +40,7 @@ model Form {
   webhooks       Hook[]
   statistic      Statistic @relation(fields: [statisticId], references: [id])
   statisticId    Int       @unique
+  redirectUrl    String?
 }
 
 model User {
