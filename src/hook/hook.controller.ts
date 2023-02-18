@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HookService } from './hook.service';
 
@@ -9,5 +9,11 @@ export class HookController {
   @UseGuards(JwtAuthGuard)
   getTypes() {
     return this.hookService.getTypes();
+  }
+
+  @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  delete(@Req() req, @Param('id') id: string) {
+    return this.hookService.delete(req.user.id, parseInt(id));
   }
 }
