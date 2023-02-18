@@ -8,6 +8,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('MagiForm - Era')
     .setVersion('0.0')
+    .addBearerAuth()
     .build();
   app.enableCors();
   const prismaService = app.get(PrismaService);

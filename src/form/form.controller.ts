@@ -10,12 +10,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FormCreateDTO } from './form.create.dto';
 import { FormService } from './form.service';
 
 @ApiTags('form')
+@ApiBearerAuth()
 @Controller('form')
 export class FormController {
   constructor(private formService: FormService) {}
@@ -37,6 +38,7 @@ export class FormController {
   async delete(@Req() req, @Param('id') id: string) {
     return this.formService.delete(req.user.id, parseInt(id));
   }
+
   @Post('/trigger/:id')
   async trigger(
     @Headers('origin') origin,

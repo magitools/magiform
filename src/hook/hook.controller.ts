@@ -9,10 +9,13 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { HookService } from './hook.service';
 
+@ApiTags('hook')
+@ApiBearerAuth()
 @Controller('hook')
 export class HookController {
   constructor(private hookService: HookService) {}
