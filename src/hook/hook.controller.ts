@@ -9,9 +9,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { HookEntity } from './hook.entity';
 import { HookService } from './hook.service';
 
 @ApiTags('hook')
@@ -26,6 +32,7 @@ export class HookController {
   }
 
   @Post('/create/:id')
+  @ApiCreatedResponse({ type: HookEntity })
   @UseGuards(JwtAuthGuard)
   create(
     @Req() req,
@@ -36,12 +43,14 @@ export class HookController {
   }
 
   @Delete('/:id')
+  @ApiResponse({ type: HookEntity })
   @UseGuards(JwtAuthGuard)
   delete(@Req() req, @Param('id') id: string) {
     return this.hookService.delete(req.user.id, parseInt(id));
   }
 
   @Put('/:id')
+  @ApiResponse({ type: HookEntity })
   @UseGuards(JwtAuthGuard)
   update(
     @Req() req,
