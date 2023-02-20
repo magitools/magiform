@@ -6,6 +6,7 @@ import {
   Headers,
   Param,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
@@ -17,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FormCreateDTO } from './form.create.dto';
 import { FormCreatedEntity, FormEntity, FormListEntity } from './form.entity';
@@ -47,6 +49,16 @@ export class FormController {
   @UseGuards(JwtAuthGuard)
   async delete(@Req() req, @Param('id') id: string) {
     return this.formService.delete(req.user.id, parseInt(id));
+  }
+
+  @Put('/:id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Req() req,
+    @Param('id') formId: string,
+    @Body() data: Prisma.FormUpdateInput,
+  ) {
+    return this.formService.update(req.user.id, parseInt(formId), data);
   }
 
   @Post('/trigger/:id')

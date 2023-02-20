@@ -33,6 +33,7 @@ export class FormService {
       where: { id: formId },
     });
     if (form.userId !== userId) throw UnauthorizedException;
+    await this.prismaService.hook.deleteMany({ where: { formId } });
     return await this.prismaService.form.delete({ where: { id: formId } });
   }
 
@@ -48,6 +49,19 @@ export class FormService {
       data: data.hooks.map((e) => ({ ...e, formId: form.id })),
     });
     return { form, hooks };
+  }
+
+  async update(userId: number, formId: number, data: Prisma.FormUpdateInput) {
+    const form = await this.prismaService.form.findUnique({
+      where: { id: formId },
+    });
+    if (form.userId !== userId) {
+      throw UnauthorizedException;
+    }
+    return await this.prismaService.form.update({
+      where: { id: formId },
+      data,
+    });
   }
 
   async trigger(origin: string, formId: number, data: Object) {
