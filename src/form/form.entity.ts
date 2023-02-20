@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Form, Hook } from '@prisma/client';
+import { Form } from '@prisma/client';
 import { HookEntity } from 'src/hook/hook.entity';
 import { StatisticsEntity } from 'src/statistics/statistic.entity';
 
