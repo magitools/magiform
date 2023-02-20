@@ -7,6 +7,8 @@ class FormCreateInput implements Prisma.FormCreateInput {
   webhooks?: Prisma.HookCreateNestedManyWithoutFormsInput;
   @ApiProperty({ description: 'list of origins separated by ;' })
   allowedOrigins: string;
+  @ApiProperty()
+  redirectUrl?: string;
   statistic: Prisma.StatisticCreateNestedOneWithoutFormInput;
 }
 

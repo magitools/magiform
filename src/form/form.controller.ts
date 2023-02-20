@@ -21,6 +21,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FormCreateDTO } from './form.create.dto';
+import { FormUpdateInput } from './form.update.dto';
 import { FormCreatedEntity, FormEntity, FormListEntity } from './form.entity';
 import { FormService } from './form.service';
 
@@ -52,11 +53,12 @@ export class FormController {
   }
 
   @Put('/:id')
+  @ApiResponse({ type: FormEntity })
   @UseGuards(JwtAuthGuard)
   async update(
     @Req() req,
     @Param('id') formId: string,
-    @Body() data: Prisma.FormUpdateInput,
+    @Body() data: FormUpdateInput,
   ) {
     return this.formService.update(req.user.id, parseInt(formId), data);
   }
