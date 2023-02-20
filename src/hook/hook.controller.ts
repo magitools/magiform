@@ -17,8 +17,10 @@ import {
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { HookCreateInput } from './hook.create.dto';
 import { HookEntity } from './hook.entity';
 import { HookService } from './hook.service';
+import { HookUpdateInput } from './hook.update.dto';
 
 @ApiTags('hook')
 @ApiBearerAuth()
@@ -37,7 +39,7 @@ export class HookController {
   create(
     @Req() req,
     @Param('id') formId: string,
-    @Body() data: Prisma.HookCreateInput,
+    @Body() data: HookCreateInput,
   ) {
     return this.hookService.create(req.user.id, parseInt(formId), data);
   }
@@ -52,11 +54,7 @@ export class HookController {
   @Put('/:id')
   @ApiResponse({ type: HookEntity })
   @UseGuards(JwtAuthGuard)
-  update(
-    @Req() req,
-    @Param('id') id: string,
-    @Body() data: Prisma.HookUpdateInput,
-  ) {
+  update(@Req() req, @Param('id') id: string, @Body() data: HookUpdateInput) {
     return this.hookService.update(req.user.id, parseInt(id), data);
   }
 }
