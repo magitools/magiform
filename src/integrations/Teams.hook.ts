@@ -1,8 +1,8 @@
 import { Base } from './Base';
 
 export default class Teams extends Base {
-  constructor(url: string, data: Object, formData: string) {
-    super('POST', url, data, formData);
+  constructor(url: string, data: Object, formData: string, files: Array<Express.Multer.File>) {
+    super('POST', url, data, formData, files);
   }
 
   async sendHook(): Promise<void> {
