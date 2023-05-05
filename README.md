@@ -76,6 +76,19 @@ npm run build
 pm2 start "npm run start"
 ```
 
+## Storage
+
+You can choose multiple storage types, the default one being on disk.
+When you decide which one to use, please provide the required environment variables.
+
+### Local
+```
+STORAGE_ADAPTER=disk
+STORAGE_DISK_PATH=<path_to_storage_folder>
+```
+
+### More Coming Soon
+
 ## Contributing
 
 Still figuring it out, to be honest
