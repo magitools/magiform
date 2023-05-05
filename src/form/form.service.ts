@@ -65,8 +65,9 @@ export class FormService {
     });
   }
 
-  async trigger(origin: string, formId: number, data: Object) {
+  async trigger(origin: string, formId: number, data: Object, files: Array<Express.Multer.File>) {
     //TODO handle form data
+    console.log(files)
     const form = await this.prismaService.form.findUnique({
       where: { id: formId },
       include: {
@@ -86,7 +87,7 @@ export class FormService {
     form.webhooks.forEach(async (hook) => {
       const { default: handler } =
         await require(`../integrations/${hook.type}.hook`);
-      await new handler(hook.url, data, form.name).sendHook();
+      await new handler(hook.url, data, form.name, files).sendHook();
     });
     await this.statisticService.update(form.id);
     return form.redirectUrl || null;

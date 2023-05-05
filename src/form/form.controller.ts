@@ -9,7 +9,9 @@ import {
   Put,
   Req,
   Res,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -24,6 +26,8 @@ import { FormCreateDTO } from './form.create.dto';
 import { FormUpdateInput } from './form.update.dto';
 import { FormCreatedEntity, FormEntity, FormListEntity } from './form.entity';
 import { FormService } from './form.service';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { getFileInterceptor } from './form.interceptor';
 
 @ApiTags('form')
 @ApiBearerAuth()
@@ -64,14 +68,19 @@ export class FormController {
   }
 
   @Post('/trigger/:id')
+  @UseInterceptors(AnyFilesInterceptor(getFileInterceptor()))
   @ApiNoContentResponse()
   async trigger(
     @Headers('origin') origin,
     @Param('id') id: string,
     @Body() data: Object,
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Res() res,
   ) {
-    const redirect = await this.formService.trigger(origin, parseInt(id), data);
+    console.log(id)
+    console.log(data)
+    if (!id) return res.redirect(origin);
+    const redirect = await this.formService.trigger(origin, parseInt(id), data, files);
     return res.redirect(redirect || `${origin}`);
   }
 }
