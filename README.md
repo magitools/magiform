@@ -76,6 +76,29 @@ npm run build
 pm2 start "npm run start"
 ```
 
+## Storage
+
+You can choose multiple storage types, the default one being on disk.
+When you decide which one to use, please provide the required environment variables.
+
+By default, files are stored in the following format: `<timestamp>_<filename>`; if you would like to randomize it, add this to your environment variables:
+```
+STORAGE_RANDOMIZE=true
+```
+By default, files are limited to 8MB to avoid DDOS attacks; you can override this by setting the following environment variable:
+```
+STORAGE_FILE_LIMIT=9000000
+```
+in the above example, the limit is now 9MB per file.
+
+### Local
+```
+STORAGE_ADAPTER=disk
+STORAGE_DISK_PATH=<path_to_storage_folder>
+```
+
+### More Coming Soon
+
 ## Contributing
 
 Still figuring it out, to be honest
