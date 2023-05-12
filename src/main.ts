@@ -13,7 +13,7 @@ async function bootstrap() {
     .build();
   app.enableCors();
   if (process.env.STORAGE_ADAPTER === "disk") {
-    app.useStaticAssets(process.env.STORAGE_PATH);
+    app.useStaticAssets(process.env.STORAGE_PATH, {prefix: "/media/"});
   }
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
