@@ -77,9 +77,6 @@ export class FormController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Res() res,
   ) {
-    console.log(id)
-    console.log(data)
-    if (!id) return res.redirect(origin);
     const redirect = await this.formService.trigger(origin, parseInt(id), data, files);
     return res.redirect(redirect || `${origin}`);
   }
