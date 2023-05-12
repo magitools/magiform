@@ -85,6 +85,11 @@ By default, files are stored in the following format: `<timestamp>_<filename>`; 
 ```
 STORAGE_RANDOMIZE=true
 ```
+By default, files are limited to 8MB to avoid DDOS attacks; you can override this by setting the following environment variable:
+```
+STORAGE_FILE_LIMIT=9000000
+```
+in the above example, the limit is now 9MB per file.
 
 ### Local
 ```
