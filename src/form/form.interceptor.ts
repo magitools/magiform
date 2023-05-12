@@ -5,7 +5,10 @@ export function getFileInterceptor(): MulterOptions {
     switch(process.env.STORAGE_ADAPTER) {
         case "disk":
             return {
-                storage: DiskStorage
+                storage: DiskStorage,
+                limits: {
+                    fileSize: process.env.STORAGE_FILE_LIMIT ? parseInt(process.env.STORAGE_FILE_LIMIT)  : 8000000
+                }
             }
         default:
             return {}
