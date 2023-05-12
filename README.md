@@ -81,6 +81,11 @@ pm2 start "npm run start"
 You can choose multiple storage types, the default one being on disk.
 When you decide which one to use, please provide the required environment variables.
 
+By default, files are stored in the following format: `<timestamp>_<filename>`; if you would like to randomize it, add this to your environment variables:
+```
+STORAGE_RANDOMIZE=true
+```
+
 ### Local
 ```
 STORAGE_ADAPTER=disk
