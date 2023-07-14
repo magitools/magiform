@@ -3,7 +3,7 @@ name: Docker Image CI
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: magiform/ara
+  IMAGE_NAME: magitools/magiform
 
 on:
   push:
