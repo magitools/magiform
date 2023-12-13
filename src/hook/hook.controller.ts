@@ -15,12 +15,9 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { HookCreateInput } from './hook.create.dto';
-import { HookEntity } from './hook.entity';
 import { HookService } from './hook.service';
-import { HookUpdateInput } from './hook.update.dto';
+import { hooks } from 'src/db';
 
 @ApiTags('hook')
 @ApiBearerAuth()
@@ -34,27 +31,27 @@ export class HookController {
   }
 
   @Post('/create/:id')
-  @ApiCreatedResponse({ type: HookEntity })
+  @ApiCreatedResponse({ type: typeof hooks.$inferSelect })
   @UseGuards(JwtAuthGuard)
   create(
     @Req() req,
     @Param('id') formId: string,
-    @Body() data: HookCreateInput,
+    @Body() data: typeof hooks.$inferInsert,
   ) {
     return this.hookService.create(req.user.id, parseInt(formId), data);
   }
 
   @Delete('/:id')
-  @ApiResponse({ type: HookEntity })
+  @ApiResponse({ type: typeof hooks.$inferSelect })
   @UseGuards(JwtAuthGuard)
   delete(@Req() req, @Param('id') id: string) {
     return this.hookService.delete(req.user.id, parseInt(id));
   }
 
   @Put('/:id')
-  @ApiResponse({ type: HookEntity })
+  @ApiResponse({ type: typeof hooks.$inferSelect })
   @UseGuards(JwtAuthGuard)
-  update(@Req() req, @Param('id') id: string, @Body() data: HookUpdateInput) {
+  update(@Req() req, @Param('id') id: string, @Body() data: typeof hooks.$inferInsert) {
     return this.hookService.update(req.user.id, parseInt(id), data);
   }
 }

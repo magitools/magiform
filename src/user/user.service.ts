@@ -1,22 +1,24 @@
-import { Prisma } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { LibSQLDatabase } from 'drizzle-orm/libsql';
+import * as schema from "../db"
+import { eq } from 'drizzle-orm';
+
+
 
 @Injectable()
 export class UserService {
-    constructor(private prismaService: PrismaService) {}
-
+    constructor(@Inject("DB") private dbService: LibSQLDatabase<typeof schema>) {}
 
     async getById(id: number) {
-        return this.prismaService.user.findUnique({where:{id}})
+        return this.dbService.query.users.findFirst({where: eq(schema.users.id, id)})
     }
     async getByEmail(email: string) {
-        return this.prismaService.user.findUnique({where:{email}})
+        return this.dbService.query.users.findFirst({where: eq(schema.users.email, email)})
     }
     async getByUsername(username: string) {
-        return this.prismaService.user.findUnique({where: {username}})
+        return this.dbService.query.users.findFirst({where: eq(schema.users.username, username)})
     }
-    async create(data: Prisma.UserCreateInput) {
-        return this.prismaService.user.create({data})
+    async create(data: typeof schema.users.$inferInsert) {
+        return this.dbService.insert(schema.users).values(data)
     }
 }

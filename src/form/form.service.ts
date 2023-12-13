@@ -1,44 +1,39 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { StatisticsService } from 'src/statistics/statistics.service';
-import { FormCreateDTO } from './form.create.dto';
+import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
+import { LibSQLDatabase } from 'drizzle-orm/libsql';
+import { eq } from 'drizzle-orm';
+import * as schema from "../db"
+import { StatisticsService } from '../statistics/statistics.service';
 
 @Injectable()
 export class FormService {
   constructor(
-    private prismaService: PrismaService,
     private statisticService: StatisticsService,
+    @Inject("DB") private dbService: LibSQLDatabase<typeof schema>,
   ) {}
 
   async getAll(userId: number) {
-    return this.prismaService.form.findMany({
-      where: { userId },
-      include: {
-        webhooks: {},
-        statistic: {},
-      },
-    });
+    return this.dbService.query.forms.findMany({
+      where: eq(schema.forms.user, userId),
+      with: {
+
+      }
+    })
   }
 
   async get(userId: number, formId: number) {
-    const form = await this.prismaService.form.findUnique({
-      where: { id: formId },
-    });
-    if (form.userId !== userId) throw UnauthorizedException;
+    const form = await this.dbService.query.forms.findFirst({where: eq(schema.forms.id, formId)})
+    if (form.user !== userId) throw UnauthorizedException;
     return form;
   }
 
   async delete(userId: number, formId: number) {
-    const form = await this.prismaService.form.findUnique({
-      where: { id: formId },
-    });
-    if (form.userId !== userId) throw UnauthorizedException;
-    await this.prismaService.hook.deleteMany({ where: { formId } });
-    return await this.prismaService.form.delete({ where: { id: formId } });
+    const form = await this.get(userId, formId);
+    if (form.user !== userId) throw UnauthorizedException;
+    await this.dbService.delete(schema.hooks).where(eq(schema.hooks.form, formId))
+    return await this.dbService.delete(schema.forms).where(eq(schema.forms.id, formId))
   }
 
-  async create(userId: number, data: FormCreateDTO) {
+/*   async create(userId: number, data: FormCreateDTO) {
     const form = await this.prismaService.form.create({
       data: {
         ...data.form,
@@ -89,5 +84,5 @@ export class FormService {
     });
     await this.statisticService.update(form.id);
     return form.redirectUrl || null;
-  }
+  } */
 }

@@ -20,14 +20,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { FormCreateDTO } from './form.create.dto';
-import { FormUpdateInput } from './form.update.dto';
-import { FormCreatedEntity, FormEntity, FormListEntity } from './form.entity';
-import { FormService } from './form.service';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FormService } from './form.service';
 import { getFileInterceptor } from './form.interceptor';
+import { forms } from 'src/db';
 
 @ApiTags('form')
 @ApiBearerAuth()
@@ -36,33 +33,33 @@ export class FormController {
   constructor(private formService: FormService) {}
 
   @Get('/')
-  @ApiResponse({ type: FormListEntity, isArray: true })
+  @ApiResponse({ type: typeof forms.$inferSelect, isArray: true })
   @UseGuards(JwtAuthGuard)
   async getAll(@Req() req) {
     return this.formService.getAll(req.user.id);
   }
 
-  @Post('/')
-  @ApiCreatedResponse({ type: FormCreatedEntity })
+/*   @Post('/')
+  @ApiCreatedResponse({ type: typeof forms.$inferSelect, })
   @UseGuards(JwtAuthGuard)
-  async create(@Req() req, @Body() data: FormCreateDTO) {
+  async create(@Req() req, @Body() data: typeof forms.$inferInsert,) {
     return this.formService.create(req.user.id, data);
   }
 
   @Delete('/:id')
-  @ApiResponse({ type: FormEntity })
+  @ApiResponse({ type: typeof forms.$inferSelect, })
   @UseGuards(JwtAuthGuard)
   async delete(@Req() req, @Param('id') id: string) {
     return this.formService.delete(req.user.id, parseInt(id));
   }
 
   @Put('/:id')
-  @ApiResponse({ type: FormEntity })
+  @ApiResponse({ type: typeof forms.$inferSelect, })
   @UseGuards(JwtAuthGuard)
   async update(
     @Req() req,
     @Param('id') formId: string,
-    @Body() data: FormUpdateInput,
+    @Body() data: typeof forms.$inferInsert,
   ) {
     return this.formService.update(req.user.id, parseInt(formId), data);
   }
@@ -79,5 +76,5 @@ export class FormController {
   ) {
     const redirect = await this.formService.trigger(origin, parseInt(id), data, files);
     return res.redirect(redirect || `${origin}`);
-  }
+  } */
 }

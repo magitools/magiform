@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { DrizzleTursoModule } from '@knaadh/nestjs-drizzle-turso';
 import { AppController } from './app.controller';
+import * as schema from "./db"
 import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FormModule } from './form/form.module';
@@ -11,7 +12,16 @@ import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
-    PrismaModule,
+    DrizzleTursoModule.register({
+      tag:"DB",
+      turso: {
+        config: {
+          url: process.env.DB_URL,
+          authToken: process.env.DB_TOKEN
+        }
+      },
+      config: { schema: { ...schema } }
+    }),
     UserModule,
     AuthModule,
     FormModule,

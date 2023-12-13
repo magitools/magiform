@@ -1,33 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable, Inject } from '@nestjs/common';
+import { LibSQLDatabase } from 'drizzle-orm/libsql';
+import * as schema from "../db"
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class StatisticsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(@Inject("DB") private dbService: LibSQLDatabase<typeof schema>) {}
 
   async getAll(userId: number) {
-    return this.prismaService.statistic.findMany({
-      where: {
+    return this.dbService.query.statistics.findMany({
+      with: {
         form: {
-          userId,
-        },
-      },
-    });
+          where: (forms, {eq}) => eq(forms.user, userId)
+        }
+      }
+    })
   }
 
-  async update(formId: number) {
-    const form = await this.prismaService.form.findUnique({
-      where: { id: formId },
-    });
-    if (form.statisticId) {
-      await this.prismaService.statistic.update({
-        where: { id: form.statisticId },
-        data: {
-          hits: {
-            increment: 1,
-          },
-        },
-      });
-    }
+  async create(data: typeof schema.statistics.$inferInsert) {
+    return this.dbService.insert(schema.statistics).values(data)
   }
 }

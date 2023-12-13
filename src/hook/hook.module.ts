@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { HookService } from './hook.service';
 import { HookController } from './hook.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { IntegrationsModule } from 'src/integrations/integrations.module';
+import { FormService } from 'src/form/form.service';
 
 @Module({
   providers: [HookService],
   controllers: [HookController],
-  imports: [PrismaModule, IntegrationsModule],
+  imports: [FormService, IntegrationsModule],
 })
 export class HookModule {}
